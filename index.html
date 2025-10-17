@@ -69,7 +69,7 @@
                 </article>
                 <article class="about-card fade-in hidden-animate" style="transition-delay: 0.2s;">
                     <h3>Year-Round Impact</h3>
-                    <p>Beyond the main event, Techfest drives year-round Social Initiatives (e.g., legal awareness, health drives) and the **Ideate** platform, connecting top innovators with corporations and government bodies for project implementation.</p>
+                    <p>Beyond the main event, Techfest drives year-round Social Initiatives (e.g., legal awareness, health drives) and the Ideate platform, connecting top innovators with corporations and government bodies for project implementation.</p>
                 </article>
             </div>
         </section>
@@ -79,22 +79,18 @@
             <h2>FLAGSHIP EVENTS</h2>
             <div class="event-cards-grid">
                 <article class="event-card fade-in hidden-animate" tabindex="0">
-                    <div class="event-icon" aria-hidden="true">🤖</div>
                     <h3>Competitions</h3>
                     <p>Fierce global challenges: International Robotics Challenge (IRC), Micromouse, and the World Programming Championship.</p>
                 </article>
                 <article class="event-card fade-in hidden-animate" style="transition-delay: 0.1s;" tabindex="0">
-                    <div class="event-icon" aria-hidden="true">🗣️</div>
                     <h3>Lectures</h3>
                     <p>Inspiring talks by global visionaries, including Nobel Laureates, astronauts, and top industry leaders like Dr. A.P.J. Abdul Kalam and Jimmy Wales.</p>
                 </article>
                 <article class="event-card fade-in hidden-animate" style="transition-delay: 0.2s;" tabindex="0">
-                    <div class="event-icon" aria-hidden="true">✨</div>
                     <h3>Exhibitions</h3>
                     <p>A technological marvel featuring Humanoid Robots, Defence Technologies (DRDO, NSG), and captivating displays like 3D Projection Mapping.</p>
                 </article>
                 <article class="event-card fade-in hidden-animate" style="transition-delay: 0.3s;" tabindex="0">
-                    <div class="event-icon" aria-hidden="true">💡</div>
                     <h3>Technoholix</h3>
                     <p>The spectacular night entertainment segment showcasing technological arts, synchronized drone shows, robotics performances, and laser displays.</p>
                 </article>
@@ -106,17 +102,14 @@
             <h2>SKILL DEVELOPMENT WORKSHOPS</h2>
             <div class="workshop-cards-grid">
                 <div class="workshop-card fade-in hidden-animate" tabindex="0">
-                    <div class="card-icon" aria-hidden="true">🧠</div>
                     <h4>AI & Machine Learning Immersion</h4>
                     <p>Deep Learning, Neural Networks, and Python Frameworks for hands-on experience.</p>
                 </div>
                 <div class="workshop-card fade-in hidden-animate" style="transition-delay: 0.1s;" tabindex="0">
-                    <div class="card-icon" aria-hidden="true">🔒</div>
                     <h4>Ethical Hacking & Cybersecurity</h4>
                     <p>Penetration Testing, Network Security, and Digital Forensics techniques.</p>
                 </div>
                 <div class="workshop-card fade-in hidden-animate" style="transition-delay: 0.2s;" tabindex="0">
-                    <div class="card-icon" aria-hidden="true">📈</div>
                     <h4>Financial Modelling & Fintech</h4>
                     <p>Valuation, Equity Analysis, and introduction to Blockchain Technology.</p>
                 </div>
@@ -327,17 +320,18 @@
     // 2. Form Validation & Submission Logic
 
     const formFields = [
-        { id: 'full-name', label: 'Full Name', required: true, validate: (value) => value.length >= 3, error: 'Please enter your full name (at least 3 characters).' },
-        { id: 'email', label: 'Email Address', required: true, validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), error: 'Please enter a valid email address (e.g., user@domain.com).' },
-        { id: 'phone', label: 'Contact Number', required: true, validate: (value) => /^\d{10,15}$/.test(value.replace(/\D/g, '')), error: 'Please enter a valid 10-15 digit contact number.' },
-        { id: 'role', label: 'Role', required: true, validate: (value) => value !== '', error: 'Please select your role.' },
-        { id: 'message', label: 'Message/Query', required: true, validate: (value) => value.length >= 10, error: 'Please enter a message of at least 10 characters.' },
-        { id: 'consent', label: 'Consent', required: true, type: 'checkbox', validate: (checked) => checked, error: 'You must agree to receive communications.' }
+        { id: 'full-name', errorId: 'error-name', label: 'Full Name', required: true, validate: (value) => value.length >= 3, error: 'Please enter your full name (at least 3 characters).' },
+        { id: 'email', errorId: 'error-email', label: 'Email Address', required: true, validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), error: 'Please enter a valid email address (e.g., user@domain.com).' },
+        { id: 'phone', errorId: 'error-phone', label: 'Contact Number', required: true, validate: (value) => /^\d{10,15}$/.test(value.replace(/\D/g, '')), error: 'Please enter a valid 10-15 digit contact number.' },
+        { id: 'role', errorId: 'error-role', label: 'Role', required: true, validate: (value) => value !== '', error: 'Please select your role.' },
+        { id: 'message', errorId: 'error-message', label: 'Message/Query', required: true, validate: (value) => value.length >= 10, error: 'Please enter a message of at least 10 characters.' },
+        { id: 'consent', errorId: 'error-consent', label: 'Consent', required: true, type: 'checkbox', validate: (checked) => checked, error: 'You must agree to receive communications.' }
     ];
 
     function validateField(fieldConfig, inputElement) {
         let value = fieldConfig.type === 'checkbox' ? inputElement.checked : inputElement.value.trim();
-        let errorElement = document.getElementById(`error-${fieldConfig.id.replace(/-/g, '')}`);
+        // Prefer explicit errorId mapping to avoid selector mismatches
+        let errorElement = document.getElementById(fieldConfig.errorId || `error-${fieldConfig.id}`);
         
         let isValid = true;
         let errorMessage = '';
@@ -352,11 +346,11 @@
 
         if (!isValid) {
             inputElement.classList.add('error');
-            errorElement.textContent = errorMessage;
+            if (errorElement) errorElement.textContent = errorMessage;
             inputElement.setAttribute('aria-invalid', 'true');
         } else {
             inputElement.classList.remove('error');
-            errorElement.textContent = '';
+            if (errorElement) errorElement.textContent = '';
             inputElement.removeAttribute('aria-invalid');
         }
         return isValid;
@@ -468,11 +462,11 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
         
         :root {
-            --color-primary-blue: #0056b3; /* Deep Techfest Blue */
+            --color-primary-blue: #fbbe22; /* Deep Techfest Blue */
             --color-accent-orange: #ff5722; /* Vibrant Orange/Energy */
-            --color-light-bg: #f0f4f8;
-            --color-dark-text: #333;
-            --color-white: #ffffff;
+            --color-light-bg: #121416;
+            --color-dark-text: #4800ff;
+            --color-white: #000000;
             --color-error: #e74c3c;
             --color-success: #27ae60;
             --font-main: 'Inter', sans-serif;
@@ -802,6 +796,7 @@
             font-weight: 900;
             color: var(--color-primary-blue);
             margin-bottom: 0.2rem;
+            white-space: nowrap; /* prevent large numbers from wrapping */
         }
 
 
